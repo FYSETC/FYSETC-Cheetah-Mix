@@ -62,13 +62,13 @@ Step 2: Install CM4 to Cheetah Mix
 
 Step 3: Set Pi boot jumper
 
-![image-20220225152923346](..\images\pi_boot.png)
+![image-20220225152923346](../images/pi_boot.png)
 
 Step 4: Connect Cheetah Mix
 
 Connect Cheetah Mix to your computer with micro-usb cable and power on Cheetah Mix.
 
-![](..\images\pi_usb.png)
+![](../images/pi_usb.png)
 
 Step 4: Flash OS to CM4 eMMC
 
@@ -82,7 +82,7 @@ If you use OctoPi OS, you can follow [here](https://community.octoprint.org/t/fi
 
 If you use our OctoPi OS and your Cheetah Mix is runing our provided Marlin, you can send `M711` command from your computer to get IP address from Cheetah Mix TypeC USB port( need install serial tool on your computer). Remember to remove two jumpers below or it will connect to RaspberryPi CM4 but not your computer.
 
- ![](..\images\usb_jumper.png)
+ ![](../images/usb_jumper.png)
 
 #### 1.1.1.3 Expand OS fs
 
@@ -144,11 +144,11 @@ You can find Marlin source code in `firmware/Marlin` folder. We already set the 
 
 Open Vscode and open platformio main page and click the "Open Project" button , and direct to the folder where you put your firmware.
 
-![1561099422559](..\images\AIO_f1.png)
+![1561099422559](../images/AIO_f1.png)
 
 If everything goes fine , at the bottom you can see several buttons
 
-![1561099546202](..\images\AIO_f2.png)
+![1561099546202](../images/AIO_f2.png)
 
 The check mark is for compiling , click it to compile. You can find built `firmware.bin` at `Marlin\.pio\build\CREALITY_3D_PI` folder.
 
@@ -190,7 +190,7 @@ If you choose `No bootloader` bootloader offset in Klipper `make menuconfig`, me
 
 **Note: pre-build firmware will be outdated if Klipper update and will not match your new downloaded Klipper and cause annoying issues. We recommend to build the firmware yourself with the options we provide.**
 
-![image-20210705151440643](..\images\menuconfig.png)
+![image-20210705151440643](../images/menuconfig.png)
 
 - ###### 2. 32KiB bootloader
 
@@ -204,14 +204,14 @@ We provide pre-build firmwares with `32KiB bootloader` named `klipper-32k.bin`, 
 
 **Note pre-build firmware will be outdated if Klipper update and will not match your new downloaded Klipper and cause annoying issues. We recommend to build the firmware yourself.**
 
-![image-20210705151337765](..\images\menuconfig2.png)
+![image-20210705151337765](../images/menuconfig2.png)
 
 - ##### Communication interface
 
   Select the high-light option show below.
 
 
-![image-20210705154625673](..\images\menuconfig3.png)
+![image-20210705154625673](../images/menuconfig3.png)
 
 #### 1.2.2.2 Compile firmware
 
@@ -239,7 +239,7 @@ Cheetah Mix has stock bootloader, so we can upload the firmware with SD card. Co
 
 ##### Remember to set jumper on RaspberryPi USB connection pins and click the mcuRST button after uploading.
 
-![](..\images\usb_jumper.png)
+![](../images/usb_jumper.png)
 
 **Note: If you have Klipper connection issue, you can try to power off-on the board.**
 
@@ -307,7 +307,7 @@ stm32flash -R -w firmware.bin -S 0x08008000 -v -i rts,,-dtr,,dtr, /dev/ttyUSB0
 
 ##### Step 4. Set jumper on RaspberryPi USB connection pins and click the mcuRST button
 
-![](..\images\usb_jumper.png)
+![](../images/usb_jumper.png)
 
 **Note: If you have Klipper connection issue, you can try to power off-on the board.**
 
@@ -323,7 +323,7 @@ https://www.st.com/zh/development-tools/stm32cubeprog.html
 
 Open the STM32CubeProgrammer software.
 
-![1574332767079](..\images\S6_1574332767079.png)
+![1574332767079](../images/S6_1574332767079.png)
 
 ##### Step 2. Enter DFU mode
 
@@ -342,7 +342,7 @@ Now the board is in DFU mode. If not, try to click the mcu reset button `mcuRST`
 
 Now you can connect and flash the Spider board with stm32cubeprogrammer with the following operation.
 
-![1574386395071](..\images\S6_1574386395071.png)
+![1574386395071](../images/S6_1574386395071.png)
 
 Do as the red number shows in the screen shot.
 
@@ -354,7 +354,7 @@ Do as the red number shows in the screen shot.
 
 ##### Step 4. Set jumper on RaspberryPi USB connection pins and click the mcuRST button
 
-![](..\images\usb_jumper.png)
+![](../images/usb_jumper.png)
 
 **Note: If you have Klipper connection issue, you can try to power off-on the board.**
 
@@ -377,10 +377,10 @@ Now the board is in DFU mode. If not, try to click the mcu reset button `mcuRST`
 
 ##### Step 2. Click the upload button to upload firmware
 
-![](..\images\platformio_upload.png)
+![](../images/platformio_upload.png)
 
 ##### Step 3. Set jumper on RaspberryPi USB connection pins and click the mcuRST button
 
-![](..\images\usb_jumper.png)
+![](../images/usb_jumper.png)
 
 **Note: If you have Klipper connection issue, you can try to power off-on the board.**
