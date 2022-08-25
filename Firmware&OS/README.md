@@ -1,4 +1,4 @@
-# Firmware&OS Guide 
+# Firmware&OS Guide
 
 As we offer you two core board options on Cheetah Mix, so there are 3 combinations of firmware and OS.
 
@@ -96,37 +96,172 @@ Our OctoPi OS is pre-config for Marlin, if you want to run Klipper, you need to 
 
 We can follow the steps below to install KlipperWrt
 
-Step 1: Power off motherboard
+##### Step 1: Power off motherboard
 
-Step 2: Install m10 core board to Cheetah Mix
+##### Step 2: Install m10 core board to Cheetah Mix
 
-Step 3: Insert an empty micro-sd card to `SYS_SD` slot
+![](../images/m10_install.jpg)
 
-Step 4: Connect Cheetah Mix directly to your computer with network cable
+##### Step 3: Insert an empty micro-sd card to `SYS_SD` slot
 
-Step 5: Download KlipperWrt from [here](https://github.com/ihrapsa/KlipperWrt).
+##### Step 4: Connect Cheetah Mix directly to your computer with network cable
 
-Step 6: Prepare KlipperWrt firmware
+##### Step 5: Download KlipperWrt from [here](https://github.com/ihrapsa/KlipperWrt).
 
-Copy and rename KlipperWrt file `MainsailWrt-SYSUPGRADE-ramips-mt76x8-creality_wb-01-squashfs-k5.10.46.bin` or `fluiddWrt-SYSUPGRADE-ramips-mt76x8-creality_wb-01-squashfs-k5.10.46.bin` ( you can find them in `KlipperWrt\Firmware\OpenWrt_snapshot` folder) to `root_uImage.bin`.
+##### Step 6: Prepare KlipperWrt firmware
 
-Step 7: Reset m10
+Copy and rename KlipperWrt file `openwrt_snapshot_xxx-sysupgrade.bin` ( you can find it in `KlipperWrt\Firmware\OpenWrt_snapshot` folder) to `root_uImage.bin`.
 
-Press and hold `m10RST` button and power on the Cheetah Mix with 24v, wait for 6s then loose the button
+##### Step 7: Enter m10 boot page
 
-Step 8: Upload firmware
+Set 5v jumper as below shows, then press and hold `m10RST` button and power on board with 24v
+
+![](../images/5v_jumper.jpg)
+
+##### Step 8: Upload m10 firmware
 
 Visit 192.168.1.1 web page. Click `选择文件` button ![](..\images\m10_choose_file.png) and choose `root_uImage.bin` and click `Firmware update` button to upload firmware to m10, wait for finish.
 
-Step 8: Reboot
+##### Step 9: Reboot
 
-Power off and power on Cheetah Mix
+Power off and power on Cheetah Mix with 24v power supply.
 
 Wait for your computer to recognize m10 network ![](..\images\m10_network.png)
 
-Step 9: Install KlipperWrt software
+##### Step 10: Connect Cheetah Mix to Ethernet
 
-Then follow the instruction [here](https://github.com/ihrapsa/KlipperWrt#automatic-steps) (i recommend [this method](https://github.com/ihrapsa/KlipperWrt#extroot-script-method))to install and config KlipperWrt software. 
+According to our test, the best and most stable way to visit Cheetah Mix is using ethernet. Follow the steps below:
+
+1. Visit `192.168.1.1:81`, go to Network->Interfaces
+   
+   Click the `Edit` button
+   
+   ![](../images/ethernet1.png)
+
+2. Change the items as the below screen shot show
+   
+   Remember to click `switch protocal` button
+   
+   ![](../images/ethernet2.png)
+
+3. Save -> Save & Apply -> Apply adn keep settings and wait for about 40 seconds for its parameter saving
+
+4. Power off Cheetah Mix ,wait for power led off and power on it.
+
+5. Connect your PC back to your router, and connect Cheetah Mix to your router with network cable. 
+
+6. Find the devices IP address using your router admin page or a IP scanner tool like [Angry ip scanner](https://angryip.org/) (The host name is `OpenWrt` or `KlipperWrt`)
+
+##### Step 11: Setup SSH connection
+
+Install MobaXterm software and setup a SSH session to connect M10. Or just visit the `http://openwrt.local:81` or `http://m10-ip:81` you get from last step and go to `Services->Terminal` menu. 
+
+##### Step 12: Install KlipperWrt
+
+We have two options here. It is base on the KlipperWrt instruction [here](https://github.com/ihrapsa/KlipperWrt#automatic-steps).
+
+###### Option 1: Installing Script method
+
+Installs everything fresh and up to date. Possibly unstable, sometimes new dependencies are added and I might not have updated the script by then.  
+
+<details>
+  <summary>Click for STEPS!</summary>
+
+This method uses 2 scripts to foramt an sd card and make it extroot and another one that installes everything from the internet.
+
+- Download and execute the `1_format_extroot.sh` script:
+
+> 
+
+    cd ~
+    wget https://github.com/ihrapsa/KlipperWrt/raw/main/scripts/1_format_extroot.sh
+    chmod +x 1_format_extroot.sh
+    ./1_format_extroot.sh
+
+- You'll be prompted to reboot: type `reboot`
+
+- Wait for m10 led stop flashing, power off. And power on again.
+
+- Download and execute the `2_script_manual.sh` script:
+
+> 
+
+    cd ~
+    wget https://github.com/ihrapsa/KlipperWrt/raw/main/scripts/2_script_manual.sh
+    chmod +x 2_script_manual.sh
+    ./2_script_manual.sh
+
+- Follow the prompted instructions and wait for everything to be installed
+
+- remove the scripts when done: `rm -rf /root/*.sh`
+
+- Type `reboot` and wait for m10 led stop flashing, power off. And power on again.
+
+- Use `http://openwrt.local` or `http://m10-ip`to access the Klipper client
+
+- Done!
+
+- Follow the Klipper guide next [here](#jumpk) to build Klipper.bin
+
+- Go to [Flash firmware](#jumpf) step next.
+
+</details>
+
+###### Option 2: Cloning script method
+
+<details>
+  <summary>Click for STEPS!</summary>
+
+This uses the preinstalled extroot filesystem archives [Releases](https://github.com/ihrapsa/KlipperWrt/releases/tag/v1.0).  
+It comes preinstalled with **Mainsail** and **Klipper**, **Moonraker**, **mjpg-streamer** (for webcam stream) and Fry's **timelapse component** (for taking frames and rendering the video).
+
+STEPS:
+
+- Download and execute the install script:
+
+> 
+
+    cd ~
+    wget https://github.com/ihrapsa/KlipperWrt/raw/main/scripts/KlipperWrt_install.sh
+    chmod +x KlipperWrt_install.sh
+    ./KlipperWrt_install.sh
+
+- Wait until it prompts you to reboot
+- remove the script when done: `rm -rf /root/*.sh`
+- Type `reboot` and wait for m10 led stop flashing, power off. And power on again.
+- Use `http://klipperwrt.local` or `http://m10-ip`to access the Klipper client
+- Done!
+
+*Notes:*
+
+- Check [here](https://github.com/mainsail-crew/moonraker-timelapse/blob/main/docs/configuration.md) for how to configure timelapse inside Mainsail dashboard and slicer. Fluidd currently requires editing the moonraker.conf variables since it doesn't have a UI for that component yet.
+  
+  </details>
+
+</details>
+
+##### Step 13:  <span id="jumpf">Flash firmware</span>
+
+Follow the instruction [here](#jump1) to flash.
+
+##### Step 14: Setup printer.cfg
+
+```
+cd ~/klipper_config
+wget https://raw.githubusercontent.com/FYSETC/FYSETC-Cheetah-Mix/main/Firmware%26OS/Klipper/printer.cfg
+```
+
+Setting up your `printer.cfg`
+
+- add these lines inside your `printer.cfg` depending on your klipper client (mainsail/fluidd):
+
+- **Fluidd:** `[include fluidd.cfg]` `[include fluidd_macros.cfg] # include your macros inside this file`
+
+- **Mainsail:** `[include mainsail.cfg]` `[include timelapse.cfg]`
+
+- Do a `FIRMWARE RESTART` inside fluidd/Mainsail
+
+- Done
 
 ## 1.2 Firmware Guide
 
@@ -156,11 +291,11 @@ The check mark is for compiling , click it to compile. You can find built `firmw
 
 Follow Firmware Upload guide [here](#jump0).
 
-### 1.2.2 Klipper
+### 1.2.2 <span id="jumpk">Klipper</span>
 
 We put Klipper related files like `printer.cfg` in `Klipper` folder. Please read the `README.md` there for details. 
 
-If you want to use Klipper. You need to follow the Klipper [installation guide](https://www.klipper3d.org/Installation.html) to install [Klipper](https://github.com/KevinOConnor/klipper) first (M10 core don't have build environment, so still need raspberrypi to build klipper). On the step of building, we call `make menuconfig` to choose build options, please select options for Cheetah Mix as describe below.
+If you want to use Klipper. You need to follow the Klipper [installation guide](https://www.klipper3d.org/Installation.html) to install [Klipper](https://github.com/KevinOConnor/klipper) first (M10 core don't have build environment, so still need raspberrypi or linux desktop/VM to build klipper). On the step of building, we call `make menuconfig` to choose build options, please select options for Cheetah Mix as describe below.
 
 #### 1.2.2.1 menuconfig
 
@@ -181,35 +316,22 @@ Select `STM32F401`
 Select `8 MHz crystal`
 
 - ##### Bootloader offset
+  
+  Choose `32KiB bootloader bootloader`
 
-  You have two choose, select it according to your flashed bootloader. 
-
-- ###### 1. No bootloader
-
-If you choose `No bootloader` bootloader offset in Klipper `make menuconfig`, means you don't have any bootloader flashed or don't want any bootloader, then you can follow [Upload the firmware(DFU)](#jump) to upload the firmware to Cheetah Mix board. **But you need to set the 'Start address' to 0x08000000**. We build a pre-build firmware using this option for you `klipper.bin` in `Klipper` folder. 
-
-**Note: pre-build firmware will be outdated if Klipper update and will not match your new downloaded Klipper and cause annoying issues. We recommend to build the firmware yourself with the options we provide.**
-
-![image-20210705151440643](../images/menuconfig.png)
-
-- ###### 2. 32KiB bootloader
-
-At the time i writing this README, Klipper don't have 32Kib bootloader support originally, so we need to change Klipper code first, you can follow my PR [here](https://github.com/Klipper3d/klipper/pull/5155) to change the code. After that `32KiB bootloader ` will show up.
-
-If you choose `32kiB bootloader`，we need Cheetah Mix board bootloader named `Bootloader.hex` to work with this option. 
+We need Cheetah Mix board bootloader named `Bootloader.hex` to work with this option. 
 
 **Note: Cheetah Mix has stock bootloader when it leave the factory, so if you did not crack the bootloader, you don't need to flash bootloader. But if crashed, flash it. The bootloader is in the folder named `bootloader`, please follow the README in that folder to flash.**
 
 We provide pre-build firmwares with `32KiB bootloader` named `klipper-32k.bin`, it is in `firmware&OS` folder. 
 
-**Note pre-build firmware will be outdated if Klipper update and will not match your new downloaded Klipper and cause annoying issues. We recommend to build the firmware yourself.**
+**Note: pre-build firmware will be outdated if Klipper update and will not match your new downloaded Klipper and cause annoying issues. We recommend to build the firmware yourself.**
 
 ![image-20210705151337765](../images/menuconfig2.png)
 
 - ##### Communication interface
-
+  
   Select the high-light option show below.
-
 
 ![image-20210705154625673](../images/menuconfig3.png)
 
@@ -233,28 +355,34 @@ We provide several ways to upload the firmware including SDCARD, dfu-util, DFU a
 
 #### 1.2.3.1 <span id="jump1">Upload the firmware(SDCARD)</span>
 
-Cheetah Mix has stock bootloader, so we can upload the firmware with SD card. Copy your compiled firmware file ```firmware.bin```(If you use klipper firmware, you need to rename `klipper.bin` to `firmware.bin`) to the SD card , and insert it to the SD card slot which is at the right side of the board, and then power on the board. You may need to wait for about 30s to finish uploading. And the `firmware.bin` renamed to `old.bin` when it finished. You can check it on your computer.
+Cheetah Mix has stock bootloader, so we can upload the firmware with SD card. Follow the steps below.
 
-**Note: If you once upload the firmware to Cheetah Mix flash address `0x08000000`, then the bootloader will be cracked (as it stays at 0x08000000~0x08008000), then you need to upload the bootloader to Cheetah Mix yourself, please follow the README in `Bootloader` folder to flash the bootloader.**
+1. Copy your compiled firmware file ```firmware.bin```(If you use klipper firmware, you need to rename `klipper.bin` to `firmware.bin`) to the SD card , and insert it to the SD card slot which is at the right side of the board, 
 
-##### Remember to set jumper on RaspberryPi USB connection pins and click the mcuRST button after uploading.
+2. Power on the board(if board is already powered on, only need to click the `mcuRST` button). 
 
-![](../images/usb_jumper.png)
+3. Wait for about 30s to finish uploading. 
+
+4. Click the `mcuRST` button again. 
+
+5. Take out the SD card and check if the `firmware.bin` renamed to `old.bin` on your computer, if not, you need to upload your bootloader(follow the README in `Bootloader` folder to flash the bootloader) and repeat the steps again.
+
+**Note: If you once uploaded the firmware to Cheetah Mix flash address `0x08000000`, then the bootloader will be cracked (as the bootloader stays at 0x08000000~0x08008000), then you need to upload the bootloader to Cheetah Mix yourself, please follow the README in `Bootloader` folder to flash the bootloader.**
 
 **Note: If you have Klipper connection issue, you can try to power off-on the board.**
 
-#### 1.2.3.2 <span id="jump4">Upload the firmware(dfu-util)</span>
+#### 1.2.3.2 <span id="jump4">Upload the firmware(stm32flash)</span>
 
 This method works in linux, that means should work in raspberry pi.
 
 ##### Step 1. Set jumpers and connect
 
 1. First power off the board
-2. Set jumper for 5v  <img src="E:/Projects/BOARD-FYSETC-CHEETAH_MIX/Creality-3D_Pi/Creality-3D_Pi/images/5v_jumper.jpg" style="zoom:50%;" />
-3. Set jumper on RaspberryPi USB connection pins ![](E:/Projects/BOARD-FYSETC-CHEETAH_MIX/Creality-3D_Pi/Creality-3D_Pi/images/usb_jumper.png)
+2. Set jumper for 5v  <img title="" src="../images/5v_jumper.jpg" alt="" style="zoom:50%;">
+3. Set jumper on RaspberryPi USB connection pins ![](../images/usb_jumper.png)
 4. Power up the board with 24v 
 
-##### Step 2. Install dfu-util
+##### Step 2. Install stm32flash
 
 Check if stm32flash is installed by `stm32flash -h`, it will shows like
 
@@ -315,7 +443,7 @@ stm32flash -R -w firmware.bin -S 0x08008000 -v -i rts,,-dtr,,dtr, /dev/ttyUSB0
 
 This method only works in Windows OS.
 
-##### Step 1. Download stm32cubeprogrammer 
+##### Step 1. Download stm32cubeprogrammer
 
 You can download it from ST website.
 
@@ -331,8 +459,8 @@ Open the STM32CubeProgrammer software.
 2. Set jumper on 5V <img src="..\images\5v_jumper.jpg" style="zoom:50%;" />
 3. Place jumper on BT0 to 3.3V pin ![](..\images\mcu_boot.png)
 4. Make sure no jumpers on USB connection pins ![](..\images\usb_jumper_no.png)
-4. Connect board TypeC USB port and your computer  with USB cable
-5. Power up the board with 24v 
+5. Connect board TypeC USB port and your computer  with USB cable
+6. Power up the board with 24v 
 
 Now the board is in DFU mode. If not, try to click the mcu reset button `mcuRST`. 
 
