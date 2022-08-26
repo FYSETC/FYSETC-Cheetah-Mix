@@ -230,7 +230,8 @@ STEPS:
 - remove the script when done: `rm -rf /root/*.sh`
 - Type `reboot` and wait for m10 led stop flashing, power off. And power on again.
 - Use `http://klipperwrt.local` or `http://m10-ip`to access the Klipper client
-- Done!
+- Follow the instruction [here](#jump1) to flash pre-build firmware `Firmware&OS\Klipper\firmware.bin`
+- Go to `Setup printer.cfg` step
 
 *Notes:*
 
